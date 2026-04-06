@@ -23,7 +23,8 @@
       "Bash(git rm *)",
       "Bash(.venv/bin/pytest *)",
       "Bash(pkill *)",
-      "Bash(.venv/bin/python *)"
+      "Bash(.venv/bin/python *)",
+      "Bash(ipconfig *)"
     ]
   },
   "$version": 3

@@ -15,35 +15,37 @@ Roommates, couples, and families who share grocery shopping responsibilities.
 It's unclear what items have run out at home — someone forgot to buy milk, someone bought bread twice. No shared visibility leads to waste and frustration.
 
 ### Solution
-A simple shared grocery list accessible from any device. Add items manually or via natural language ("add milk and eggs"), mark items as bought, and everyone sees the same real-time list.
+A simple shared grocery list accessible from any device. Create a room, share the 6-character code with roommates, and everyone can add items manually or via natural language ("add milk and eggs"), mark items as bought, and see the same real-time list.
 
 ## Features
 
-### Implemented (Version 1)
+### Implemented
+- ✅ Shared rooms with 6-character codes
 - ✅ Add/remove grocery items
 - ✅ Mark items as "bought"
-- ✅ Auto-refresh every 5 seconds for shared sync
+- ✅ Auto-refresh every 3 seconds for shared sync
 - ✅ Natural language input via AI agent (nanobot)
+- ✅ Room isolation — items only visible within the same room
 - ✅ Mobile-responsive UI
 - ✅ Dockerized deployment
 
-### Planned (Version 2)
-- ⬜ Multiple lists (home/work)
+### Planned
+- ⬜ Multiple lists per user (home/work)
 - ⬜ Item categories with filtering
 - ⬜ Purchase history
 - ⬜ User authentication
 
 ## Usage
 
-### Manual Item Addition
-1. Type the item name in the input field
-2. Optionally set quantity
-3. Click "Add"
-
-### AI Natural Language Addition
-1. Click "🤖 AI Add" button
-2. Type natural language like: `"add milk, 3 eggs, and bread"`
-3. Click "Add via AI" — the agent parses and adds all items
+1. **Open the app** in your browser
+2. **Create a room** or **join** with an existing code
+3. **Share the code** with your roommates
+4. **Add items** manually or via the "🤖 AI Add" button:
+   - `"add milk and eggs"`
+   - `"twenty one chupa chups"`
+   - `"3x milk, bread, butter"`
+5. **Tap items** to mark as bought
+6. Everyone sees changes within 3 seconds
 
 ## Deployment
 
@@ -55,7 +57,7 @@ A simple shared grocery list accessible from any device. Add items manually or v
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/se-toolkit-hackathon.git
+   git clone https://github.com/flikspy/se-toolkit-hackathon.git
    cd se-toolkit-hackathon
    ```
 
@@ -66,21 +68,36 @@ A simple shared grocery list accessible from any device. Add items manually or v
 
 3. **Access the app:**
    - Frontend: `http://<vm-ip>:3000`
-   - Backend API: `http://<vm-ip>:8000`
-   - API Docs: `http://<vm-ip>:8000/docs`
+   - Backend API: port 8000 (internal only, via nginx proxy)
+   - API Docs: `http://<vm-ip>:3000/api/docs` (proxied)
+
+### Architecture
+
+```
+Client (Browser) → Nginx (port 3000)
+                        ├─ serves React SPA
+                        ├─ proxies /rooms/*     → Backend
+                        ├─ proxies /agent/*     → Backend
+                        └─ proxies /health      → Backend
+                                       ↓
+                              Backend (FastAPI, port 8000)
+                                       ↓
+                              PostgreSQL (port 5432)
+```
 
 ### Services
 | Service | Port | Description |
 |---------|------|-------------|
-| Frontend (React + Nginx) | 3000 | Web UI |
-| Backend (FastAPI) | 8000 | REST API + Agent |
-| Database (PostgreSQL) | 5432 | Persistent storage |
+| Frontend (React + Nginx) | 3000 | Web UI + API proxy |
+| Backend (FastAPI) | internal | REST API + Agent |
+| Database (PostgreSQL) | internal | Persistent storage |
 
 ### Local Development
 
-**Backend:**
+**Backend (SQLite):**
 ```bash
 cd backend
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
@@ -92,14 +109,9 @@ npm install
 REACT_APP_API_URL=http://localhost:8000 npm start
 ```
 
-## Architecture
-
+**Tests:**
+```bash
+cd backend
+pip install pytest httpx
+pytest test_main.py -v
 ```
-Client (React) → Backend (FastAPI) → PostgreSQL
-                        ↑
-                  Agent (nanobot)
-```
-
-- **Backend:** FastAPI with SQLAlchemy ORM, PostgreSQL database
-- **Frontend:** React + TypeScript, mobile-responsive
-- **Agent:** Rule-based NLP parser that extracts items and quantities from natural language
