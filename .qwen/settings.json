@@ -10,7 +10,17 @@
       "Bash(rm *)",
       "Bash(git init)",
       "Bash(git checkout *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(gh *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(curl *)",
+      "Bash(git config *)",
+      "Bash(.venv/bin/uvicorn *)",
+      "Bash(sleep *)",
+      "Bash(npm start)",
+      "Bash(git rm *)"
     ]
   },
   "$version": 3

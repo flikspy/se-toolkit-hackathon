@@ -26,8 +26,11 @@ def parse_natural_language(text: str) -> List[schemas.GroceryItemCreate]:
     """Parse natural language text into grocery items."""
     text = text.lower().strip()
     
-    # Remove common filler words
-    text = re.sub(r'\b(add|buy|get|need|please|some|and|also|to|list|my|our|the|for|from)\b', ' ', text)
+    # Replace "and" with comma before removing it
+    text = re.sub(r'\band\b', ',', text)
+    
+    # Remove other filler words
+    text = re.sub(r'\b(add|buy|get|need|please|some|also|to|list|my|our|the|for|from)\b', ' ', text)
     text = re.sub(r'[^\w\s,;]', '', text)
     
     # Split by common delimiters

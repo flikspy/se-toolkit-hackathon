@@ -13,6 +13,9 @@ build/
 .env.*
 !.env.*.example
 
+# Local DB
+*.db
+
 # OS
 .DS_Store
 .Trash/
