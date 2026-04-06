@@ -22,34 +22,48 @@ CATEGORIES = {
 }
 
 
+# Number words mapping
+NUMBER_WORDS = {
+    'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5',
+    'six': '6', 'seven': '7', 'eight': '8', 'nine': '9', 'ten': '10',
+    'eleven': '11', 'twelve': '12', 'dozen': '12',
+}
+
+
 def parse_natural_language(text: str) -> List[schemas.GroceryItemCreate]:
     """Parse natural language text into grocery items."""
     text = text.lower().strip()
-    
+
     # Replace "and" with comma before removing it
     text = re.sub(r'\band\b', ',', text)
-    
+
     # Remove other filler words
     text = re.sub(r'\b(add|buy|get|need|please|some|also|to|list|my|our|the|for|from)\b', ' ', text)
     text = re.sub(r'[^\w\s,;]', '', text)
-    
+
     # Split by common delimiters
     items_text = re.split(r'[,;\n]+', text)
-    
+
     items = []
     for item_text in items_text:
         item_text = item_text.strip()
         if not item_text:
             continue
-        
-        # Try to extract quantity (e.g. "2 milk", "3x eggs")
+
+        # Try to extract quantity (e.g. "2 milk", "3x eggs", "eight eggs")
         qty_match = re.match(r'^(\d+)\s*(?:x\s*)?(.+)$', item_text)
         if qty_match:
             qty = qty_match.group(1)
             name = qty_match.group(2).strip()
         else:
-            qty = '1'
-            name = item_text
+            # Check for number words
+            words = item_text.split()
+            if words and words[0] in NUMBER_WORDS:
+                qty = NUMBER_WORDS[words[0]]
+                name = ' '.join(words[1:])
+            else:
+                qty = '1'
+                name = item_text
         
         # Handle plural -> singular
         if name.endswith('s') and len(name) > 3:
