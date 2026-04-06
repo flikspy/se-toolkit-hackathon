@@ -24,10 +24,29 @@ CATEGORIES = {
 
 # Number words mapping
 NUMBER_WORDS = {
-    'one': '1', 'two': '2', 'three': '3', 'four': '4', 'five': '5',
-    'six': '6', 'seven': '7', 'eight': '8', 'nine': '9', 'ten': '10',
-    'eleven': '11', 'twelve': '12', 'dozen': '12',
+    'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
+    'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10,
+    'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14, 'fifteen': 15,
+    'sixteen': 16, 'seventeen': 17, 'eighteen': 18, 'nineteen': 19,
+    'twenty': 20, 'thirty': 30, 'forty': 40, 'fifty': 50,
+    'hundred': 100, 'dozen': 12,
 }
+
+
+def parse_number_words(words: list) -> tuple[int, int] | None:
+    """Try to parse leading number words like 'twenty one' → (21, 2)."""
+    if not words:
+        return None
+
+    # Try multi-word: "twenty one" → 21
+    for i in range(min(len(words), 3), 0, -1):
+        parts = words[:i]
+        # All parts must be valid number words
+        if all(p in NUMBER_WORDS for p in parts):
+            total = sum(NUMBER_WORDS[p] for p in parts)
+            if total > 0:
+                return (total, i)
+    return None
 
 
 def parse_natural_language(text: str) -> List[schemas.GroceryItemCreate]:
@@ -41,8 +60,8 @@ def parse_natural_language(text: str) -> List[schemas.GroceryItemCreate]:
     text = re.sub(r'\b(add|buy|get|need|please|some|also|to|list|my|our|the|for|from)\b', ' ', text)
     text = re.sub(r'[^\w\s,;]', '', text)
 
-    # Split by common delimiters
-    items_text = re.split(r'[,;\n]+', text)
+    # Split by common delimiters (comma, semicolon, newline, tab)
+    items_text = re.split(r'[,;\n\t]+', text)
 
     items = []
     for item_text in items_text:
@@ -50,17 +69,18 @@ def parse_natural_language(text: str) -> List[schemas.GroceryItemCreate]:
         if not item_text:
             continue
 
-        # Try to extract quantity (e.g. "2 milk", "3x eggs", "eight eggs")
-        qty_match = re.match(r'^(\d+)\s*(?:x\s*)?(.+)$', item_text)
+        # Try to extract digit quantity (e.g. "2 milk", "3x eggs", "3xeggs")
+        qty_match = re.match(r'^(\d+)x?\s+(.+)$', item_text)
         if qty_match:
             qty = qty_match.group(1)
             name = qty_match.group(2).strip()
         else:
-            # Check for number words
+            # Check for number words (e.g. "twenty one chupa chups")
             words = item_text.split()
-            if words and words[0] in NUMBER_WORDS:
-                qty = NUMBER_WORDS[words[0]]
-                name = ' '.join(words[1:])
+            num_result = parse_number_words(words)
+            if num_result:
+                qty = str(num_result[0])
+                name = ' '.join(words[num_result[1]:])
             else:
                 qty = '1'
                 name = item_text

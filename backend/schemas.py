@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional
 
@@ -7,6 +7,13 @@ class GroceryItemBase(BaseModel):
     name: str
     quantity: Optional[str] = "1"
     category: Optional[str] = "other"
+
+    @field_validator("name")
+    @classmethod
+    def name_not_empty(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("Name cannot be empty")
+        return v.strip()
 
 
 class GroceryItemCreate(GroceryItemBase):
