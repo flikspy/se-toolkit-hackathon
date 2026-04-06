@@ -1,0 +1,4 @@
+[project]
+name = "shared-grocery-list"
+version = "0.1.0"
+description = "A web app for shared grocery list management"

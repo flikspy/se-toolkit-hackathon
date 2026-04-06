@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build
+build/
+
+# Env
+.env
+.env.*
+!.env.*.example
+
+# OS
+.DS_Store
+.Trash/
+
+# IDE
+.vscode/
+.idea/
