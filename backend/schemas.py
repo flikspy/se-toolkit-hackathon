@@ -3,6 +3,23 @@ from datetime import datetime
 from typing import Optional
 
 
+# --- Room ---
+
+class RoomCreate(BaseModel):
+    pass
+
+
+class Room(BaseModel):
+    id: int
+    code: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# --- Grocery Items ---
+
 class GroceryItemBase(BaseModel):
     name: str
     quantity: Optional[str] = "1"
@@ -30,6 +47,8 @@ class GroceryItemUpdate(BaseModel):
 class GroceryItem(GroceryItemBase):
     id: int
     is_bought: bool
+    room_id: int
+    added_by: str
     created_at: datetime
     updated_at: datetime
 

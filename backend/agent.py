@@ -5,7 +5,7 @@ from typing import List
 import re
 
 from database import get_db
-from models import GroceryItem
+from models import GroceryItem, Room
 import schemas, crud
 
 router = APIRouter()
@@ -109,6 +109,7 @@ def parse_natural_language(text: str) -> List[schemas.GroceryItemCreate]:
 
 class AgentRequest(BaseModel):
     text: str
+    room_code: str
 
 
 @router.post("/agent/add", response_model=List[schemas.GroceryItem])
@@ -116,13 +117,22 @@ def agent_add(request: AgentRequest, db: Session = Depends(get_db)):
     """Add items via natural language input."""
     if not request.text.strip():
         raise HTTPException(status_code=400, detail="Empty input")
-    
+
+    room = crud.get_room_by_code(db, request.room_code)
+    if room is None:
+        raise HTTPException(status_code=404, detail="Room not found")
+
     parsed_items = parse_natural_language(request.text)
     if not parsed_items:
         raise HTTPException(status_code=400, detail="Could not parse any items")
-    
+
     created = []
     for item in parsed_items:
-        created.append(crud.create_item(db, item))
-    
+        item_data = schemas.GroceryItemCreate(
+            name=item.name,
+            quantity=item.quantity,
+            category=item.category
+        )
+        created.append(crud.create_item(db, item_data, room.id))
+
     return created

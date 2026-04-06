@@ -1,9 +1,79 @@
 import { useState, useEffect } from 'react';
-import { fetchItems, createItem, toggleItem, deleteItem, addViaAgent } from './api';
+import { createRoom, joinRoom, fetchItems, createItem, toggleItem, deleteItem, addViaAgent } from './api';
 import { GroceryItem } from './types';
 import './App.css';
 
 function App() {
+  const [roomCode, setRoomCode] = useState<string | null>(localStorage.getItem('roomCode'));
+  const [joinInput, setJoinInput] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  if (!roomCode) {
+    return <Landing onJoin={code => { setRoomCode(code); localStorage.setItem('roomCode', code); }} joinInput={joinInput} setJoinInput={setJoinInput} />;
+  }
+
+  return <GroceryList roomCode={roomCode} onLeave={() => { localStorage.removeItem('roomCode'); setRoomCode(null); }} />;
+}
+
+function Landing({ onJoin, joinInput, setJoinInput }: { onJoin: (code: string) => void; joinInput: string; setJoinInput: (v: string) => void }) {
+  const [loading, setLoading] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  const handleCreate = async () => {
+    setLoading(true);
+    try {
+      const room = await createRoom();
+      onJoin(room.code);
+    } catch {
+      setLocalError('Failed to create room');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!joinInput.trim()) return;
+    setLoading(true);
+    try {
+      const room = await joinRoom(joinInput);
+      onJoin(room.code);
+    } catch {
+      setLocalError('Room not found. Check the code and try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="app landing">
+      <h1>🛒 Shared Grocery List</h1>
+      <p className="subtitle">Create a room or join with a code</p>
+
+      <button className="create-btn" onClick={handleCreate} disabled={loading}>
+        {loading ? 'Creating...' : 'Create New Room'}
+      </button>
+
+      <p className="or">— or join existing —</p>
+
+      <form onSubmit={handleJoin} className="join-form">
+        <input
+          type="text"
+          value={joinInput}
+          onChange={e => { setJoinInput(e.target.value.toUpperCase()); if (localError) setLocalError(null); }}
+          placeholder="Room code (e.g. ABC123)"
+          maxLength={6}
+          style={{ textTransform: 'uppercase' }}
+        />
+        <button type="submit" disabled={loading || joinInput.length !== 6}>Join</button>
+      </form>
+
+      {localError && <div className="error">{localError}</div>}
+    </div>
+  );
+}
+
+function GroceryList({ roomCode, onLeave }: { roomCode: string; onLeave: () => void }) {
   const [items, setItems] = useState<GroceryItem[]>([]);
   const [newItemName, setNewItemName] = useState('');
   const [newItemQty, setNewItemQty] = useState('1');
@@ -14,7 +84,7 @@ function App() {
 
   const loadItems = async () => {
     try {
-      const data = await fetchItems();
+      const data = await fetchItems(roomCode);
       setItems(data);
       setError(null);
     } catch {
@@ -24,16 +94,16 @@ function App() {
 
   useEffect(() => {
     loadItems();
-    const interval = setInterval(loadItems, 5000); // Auto-refresh every 5s
+    const interval = setInterval(loadItems, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [roomCode]);
 
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newItemName.trim()) return;
     setLoading(true);
     try {
-      await createItem({ name: newItemName.trim(), quantity: newItemQty });
+      await createItem(roomCode, { name: newItemName.trim(), quantity: newItemQty });
       setNewItemName('');
       setNewItemQty('1');
       await loadItems();
@@ -46,7 +116,7 @@ function App() {
 
   const handleToggle = async (id: number) => {
     try {
-      await toggleItem(id);
+      await toggleItem(roomCode, id);
       await loadItems();
     } catch {
       setError('Failed to update item');
@@ -55,7 +125,7 @@ function App() {
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteItem(id);
+      await deleteItem(roomCode, id);
       await loadItems();
     } catch {
       setError('Failed to delete item');
@@ -67,7 +137,7 @@ function App() {
     if (!agentInput.trim()) return;
     setLoading(true);
     try {
-      await addViaAgent(agentInput);
+      await addViaAgent(agentInput, roomCode);
       setAgentInput('');
       setShowAgent(false);
       await loadItems();
@@ -84,11 +154,17 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🛒 Shared Grocery List</h1>
-        <button className="agent-btn" onClick={() => setShowAgent(!showAgent)}>
-          🤖 AI Add
-        </button>
+        <div className="header-left">
+          <h1>🛒 Grocery List</h1>
+          <span className="room-badge" title="Share this code with roommates">{roomCode}</span>
+        </div>
+        <div className="header-right">
+          <button className="agent-btn" onClick={() => setShowAgent(!showAgent)}>🤖 AI Add</button>
+          <button className="leave-btn" onClick={onLeave} title="Leave room">←</button>
+        </div>
       </header>
+
+      <p className="share-hint">Share code <strong>{roomCode}</strong> with your roommates to collaborate</p>
 
       {showAgent && (
         <form onSubmit={handleAgentSubmit} className="agent-form">
@@ -96,7 +172,7 @@ function App() {
             type="text"
             value={agentInput}
             onChange={e => setAgentInput(e.target.value)}
-            placeholder='e.g. "add milk and eggs"'
+            placeholder='e.g. "add 3 milk and eggs"'
           />
           <button type="submit" disabled={loading}>Add via AI</button>
         </form>

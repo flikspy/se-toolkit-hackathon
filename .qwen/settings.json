@@ -21,7 +21,9 @@
       "Bash(sleep *)",
       "Bash(npm start)",
       "Bash(git rm *)",
-      "Bash(.venv/bin/pytest *)"
+      "Bash(.venv/bin/pytest *)",
+      "Bash(pkill *)",
+      "Bash(.venv/bin/python *)"
     ]
   },
   "$version": 3
