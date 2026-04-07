@@ -10,7 +10,6 @@ A web app for shared grocery list management with AI-powered natural language in
 ### Shared Grocery List
 ![Grocery List](docs/screenshot-list.svg)
 
-*Replace placeholder screenshots with real screenshots after deploying.*
 
 ## Context
 
