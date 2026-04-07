@@ -24,7 +24,8 @@
       "Bash(.venv/bin/pytest *)",
       "Bash(pkill *)",
       "Bash(.venv/bin/python *)",
-      "Bash(ipconfig *)"
+      "Bash(ipconfig *)",
+      "Bash(mkdir *)"
     ]
   },
   "$version": 3

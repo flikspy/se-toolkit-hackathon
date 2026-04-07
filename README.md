@@ -4,7 +4,13 @@ A web app for shared grocery list management with AI-powered natural language in
 
 ## Demo
 
-![Shared Grocery List Screenshot](docs/screenshot.png)
+### Landing — Create or Join Room
+![Landing Page](docs/screenshot-landing.svg)
+
+### Shared Grocery List
+![Grocery List](docs/screenshot-list.svg)
+
+*Replace placeholder screenshots with real screenshots after deploying.*
 
 ## Context
 
