@@ -25,7 +25,10 @@
       "Bash(pkill *)",
       "Bash(.venv/bin/python *)",
       "Bash(ipconfig *)",
-      "Bash(mkdir *)"
+      "Bash(mkdir *)",
+      "Bash(chmod *)",
+      "Bash(brew *)",
+      "Bash(./deploy.sh)"
     ]
   },
   "$version": 3
