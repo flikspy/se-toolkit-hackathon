@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Grocery List - Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 120px;
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+            break-after: page;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        /* Slide 1 - Title */
+        .slide-1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            text-align: center;
+        }
+
+        .slide-1::before {
+            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+
+        .slide-1 h1 {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        .slide-1 .emoji {
+            font-size: 96px;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .slide-1 .subtitle {
+            font-size: 28px;
+            font-weight: 300;
+            opacity: 0.9;
+            margin-bottom: 60px;
+        }
+
+        .slide-1 .author-info {
+            font-size: 22px;
+            line-height: 1.8;
+            opacity: 0.85;
+        }
+
+        .slide-1 .author-info span {
+            display: block;
+        }
+
+        /* Slide 2 - Context */
+        .slide-2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .slide-2::before {
+            background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+
+        .slide-2 h2 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 60px;
+            letter-spacing: -1px;
+        }
+
+        .slide-2 .context-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .slide-2 .context-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .slide-2 .context-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .slide-2 .context-card p {
+            font-size: 20px;
+            line-height: 1.6;
+            opacity: 0.85;
+        }
+
+        .slide-2 .context-card .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .slide-2 .problem-sentence {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-2 .problem-sentence p {
+            font-size: 26px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* Slide 3 - Implementation */
+        .slide-3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .slide-3::before {
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 60%);
+        }
+
+        .slide-3 h2 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 60px;
+            letter-spacing: -1px;
+        }
+
+        .slide-3 .impl-content {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .slide-3 .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .slide-3 .tech-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-3 .versions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .slide-3 .version-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .slide-3 .version-card h3 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .slide-3 .version-card ul {
+            list-style: none;
+            font-size: 18px;
+            line-height: 2;
+        }
+
+        .slide-3 .version-card ul li::before {
+            content: '✓ ';
+            font-weight: bold;
+        }
+
+        .slide-3 .feedback-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .slide-3 .feedback-section h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .slide-3 .feedback-section p {
+            font-size: 18px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Slide 4 - Architecture */
+        .slide-4 {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .slide-4::before {
+            background: radial-gradient(circle at 40% 60%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+
+        .slide-4 h2 {
+            font-size: 56px;
+            font-weight: 700;
+            margin-bottom: 60px;
+            letter-spacing: -1px;
+        }
+
+        .slide-4 .architecture {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .slide-4 .arch-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .slide-4 .arch-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px 50px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 22px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .slide-4 .arch-arrow {
+            font-size: 32px;
+            opacity: 0.7;
+        }
+
+        .slide-4 .arch-row {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+        }
+
+        /* Slide 5 - Demo */
+        .slide-5 {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            text-align: center;
+        }
+
+        .slide-5::before {
+            background: radial-gradient(circle at 60% 40%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        }
+
+        .slide-5 h2 {
+            font-size: 64px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .slide-5 .demo-subtitle {
+            font-size: 28px;
+            opacity: 0.8;
+            margin-bottom: 60px;
+        }
+
+        .slide-5 .demo-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            width: 100%;
+            margin-bottom: 60px;
+        }
+
+        .slide-5 .demo-feature {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-align: left;
+        }
+
+        .slide-5 .demo-feature h4 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .slide-5 .demo-feature p {
+            font-size: 18px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .slide-5 .demo-link {
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px 40px;
+            border-radius: 50px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .slide-5 .demo-link code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #fee140;
+        }
+
+        /* Print styles for PDF */
+        @media print {
+            .slide {
+                width: 100%;
+                height: 100vh;
+                page-break-after: always;
+                padding: 60px 80px;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* Navigation */
+        .nav-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            opacity: 0.7;
+            z-index: 100;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">Slide <span id="current-slide">1</span> / 5</div>
+    <div class="nav-hint">Scroll down or use arrow keys to navigate</div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide slide-1" id="slide-1">
+        <span class="emoji">🛒</span>
+        <h1>Shared Grocery List</h1>
+        <p class="subtitle">AI-Powered Grocery Sharing for Modern Households</p>
+        <div class="author-info">
+            <span><strong>Mikhail Petrunin</strong></span>
+            <span>m.petrunin@innopolis.university</span>
+            <span>Group DSAI-04</span>
+        </div>
+    </div>
+
+    <!-- Slide 2: Context -->
+    <div class="slide slide-2" id="slide-2">
+        <h2>Context & Problem</h2>
+        <div class="context-grid">
+            <div class="context-card">
+                <span class="icon">👥</span>
+                <h3>End Users</h3>
+                <p>Roommates, couples, and families who share grocery shopping responsibilities and need to coordinate household purchases.</p>
+            </div>
+            <div class="context-card">
+                <span class="icon">😤</span>
+                <h3>The Problem</h3>
+                <p>No shared visibility into household supplies — someone forgot to buy milk, someone bought bread twice. Leads to waste, frustration, and duplicated purchases.</p>
+            </div>
+            <div class="problem-sentence">
+                <p>💡 <strong>Solution:</strong> A simple shared grocery list accessible from any device — create a room, share the code with roommates, and everyone can add items manually or via natural language AI input.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Implementation -->
+    <div class="slide slide-3" id="slide-3">
+        <h2>Implementation</h2>
+        <div class="impl-content">
+            <div class="tech-stack">
+                <div class="tech-badge">⚛️ React</div>
+                <div class="tech-badge">🐍 FastAPI</div>
+                <div class="tech-badge">🐘 PostgreSQL</div>
+                <div class="tech-badge">🐳 Docker</div>
+                <div class="tech-badge">🤖 AI Agent</div>
+            </div>
+            <div class="versions-grid">
+                <div class="version-card">
+                    <h3>Version 1</h3>
+                    <ul>
+                        <li>Basic grocery list (single user)</li>
+                        <li>Add/remove items</li>
+                        <li>Mark items as "bought"</li>
+                        <li>Simple CRUD interface</li>
+                        <li>SQLite database</li>
+                    </ul>
+                </div>
+                <div class="version-card">
+                    <h3>Version 2</h3>
+                    <ul>
+                        <li>Shared rooms with 6-char codes</li>
+                        <li>Multi-user real-time sync</li>
+                        <li>AI natural language input</li>
+                        <li>Room isolation & security</li>
+                        <li>PostgreSQL + Docker deployment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Architecture -->
+    <div class="slide slide-4" id="slide-4">
+        <h2>Architecture</h2>
+        <div class="architecture">
+            <div class="arch-diagram">
+                <div class="arch-box" style="background: rgba(255,255,255,0.25);">
+                    🌐 Client (Browser)
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box" style="background: rgba(255,255,255,0.2);">
+                    🔄 Nginx (Port 3000)
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-row">
+                    <div class="arch-box" style="background: rgba(255,255,255,0.15);">
+                        ⚡ FastAPI Backend<br/>
+                        <small>(Port 8000)</small>
+                    </div>
+                    <div class="arch-box" style="background: rgba(255,255,255,0.15);">
+                        🤖 AI Agent<br/>
+                        <small>(Natural Language)</small>
+                    </div>
+                </div>
+                <div class="arch-arrow">↓</div>
+                <div class="arch-box" style="background: rgba(255,255,255,0.1);">
+                    🐘 PostgreSQL (Port 5432)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Demo -->
+    <div class="slide slide-5" id="slide-5">
+        <h2>🎬 Demo</h2>
+        <p class="demo-subtitle">Watch the product in action</p>
+        <div class="demo-features">
+            <div class="demo-feature">
+                <h4>🏠 Create or Join Room</h4>
+                <p>Get a unique 6-character code and share it with your roommates</p>
+            </div>
+            <div class="demo-feature">
+                <h4>🤖 AI Add Items</h4>
+                <p>Type naturally: "add 3x milk, bread, butter" and AI parses it</p>
+            </div>
+            <div class="demo-feature">
+                <h4>✅ Real-Time Sync</h4>
+                <p>Everyone sees changes within 3 seconds — no conflicts</p>
+            </div>
+            <div class="demo-feature">
+                <h4>🛍️ Mark as Bought</h4>
+                <p>Tap items to mark as purchased — clear visual feedback</p>
+            </div>
+        </div>
+        <div class="demo-link">
+            <strong>Live Demo:</strong> <code>http://10.93.24.144:3000</code>
+        </div>
+    </div>
+
+    <script>
+        // Simple slide navigation
+        let currentSlide = 1;
+        const totalSlides = 5;
+
+        function updateSlide(n) {
+            document.getElementById('current-slide').textContent = n;
+            document.getElementById(`slide-${n}`).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const newSlide = Math.round(scrollPos / windowHeight) + 1;
+            if (newSlide !== currentSlide && newSlide >= 1 && newSlide <= totalSlides) {
+                currentSlide = newSlide;
+                document.getElementById('current-slide').textContent = currentSlide;
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                if (currentSlide < totalSlides) {
+                    currentSlide++;
+                    updateSlide(currentSlide);
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 1) {
+                    currentSlide--;
+                    updateSlide(currentSlide);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

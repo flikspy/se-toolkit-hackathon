@@ -28,7 +28,15 @@
       "Bash(mkdir *)",
       "Bash(chmod *)",
       "Bash(brew *)",
-      "Bash(./deploy.sh)"
+      "Bash(./deploy.sh)",
+      "Bash(git pull *)",
+      "Bash(git stash)",
+      "Bash(git stash *)",
+      "Bash(sshpass *)",
+      "Bash(node *)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(open *)"
     ]
   },
   "$version": 3

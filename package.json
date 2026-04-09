@@ -1,0 +1,27 @@
+{
+  "name": "sharedgrocery",
+  "version": "1.0.0",
+  "description": "A web app for shared grocery list management with AI-powered natural language input. Built for the SE Toolkit Hackathon.",
+  "main": "convert-to-pdf.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flikspy/se-toolkit-hackathon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/flikspy/se-toolkit-hackathon/issues"
+  },
+  "homepage": "https://github.com/flikspy/se-toolkit-hackathon#readme",
+  "dependencies": {
+    "puppeteer": "^24.40.0"
+  }
+}
